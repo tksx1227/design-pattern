@@ -1,40 +1,23 @@
 package FactoryMethod;
 
-// Product の抽象クラス
+// 抽象クラス
 abstract class Product {
-	public abstract void method1();
-	public abstract void method2();
+	public abstract void use();
 }
 
-// Product の具象クラス
-// ハードウェア部門
-// 任天堂スイッチを表す
-class NintendoSwitch extends Product {
-	NintendoSwitch() {
-		System.out.println("任天堂スイッチを製造します。");
+// 具象クラス
+class IDCard extends Product {
+	private String owner;
+
+	IDCard(String owner) {
+		this.owner = owner;
 	}
 
-	public void method1() {
-		System.out.println("method1");
+	public void use() {
+		System.out.println(owner + "のカードを使います。");
 	}
 
-	public void method2() {
-		System.out.println("method2");
-	}
-}
-
-// ソフトウェア部門
-// マリオカートを表す
-class MarioKart extends Product {
-	MarioKart() {
-		System.out.println("マリオカートを製造します。");
-	}
-
-	public void method1() {
-		System.out.println("method1");
-	}
-
-	public void method2() {
-		System.out.println("method2");
+	public String getOwner() {
+		return owner;
 	}
 }

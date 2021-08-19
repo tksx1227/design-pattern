@@ -1,27 +1,37 @@
 package FactoryMethod;
 
-// Factory の抽象クラス
-// ゲーム会社全体を表す
-abstract class GameFactory {
-	public abstract Product factoryMethod();
+import java.util.Vector;
 
-	public final Product create() {
-		Product product = factoryMethod();
-		return product;
+// 抽象クラス
+abstract class Factory {
+	// このクラスでは、createメソッドでproductを生成して、
+	// 登録まで行う、という処理の流れが規定されている
+	public final Product create(String owner) {
+		Product p = createProduct(owner);
+		registerProduct(p);
+		return p;
 	}
+
+	// 抽象メソッド
+	// 実際にどのようにインスタンスを生成するのかはサブクラスで実装する
+	protected abstract Product createProduct(String owner);
+	protected abstract void registerProduct(Product product);
 }
 
-// Factory の具象クラス
-// ハードウェアを製造する会社を表す
-class HardFactory extends GameFactory {
-	public Product factoryMethod() {
-		return new NintendoSwitch();
-	}
-}
+// 具象クラス
+class IDCardFactory extends Factory {
+	private Vector owners = new Vector();
 
-// ソフトウェアを製造する会社を表す
-class SoftFactory extends GameFactory {
-	public Product factoryMethod() {
-		return new MarioKart();
+	// スーパークラスで定義していた実装クラスを実装する
+	protected Product createProduct(String owner) {
+		return new IDCard(owner);
+	}
+
+	protected void registerProduct(Product product) {
+		owners.add(((IDCard)product).getOwner());
+	}
+
+	public Vector getOwners() {
+		return owners;
 	}
 }
