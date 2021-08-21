@@ -1,21 +1,28 @@
 package Builder;
 
-// Director のクラス
+// Builderで定義したインターフェースを使ってインスタンスを生成する
+// ConcreteBuilderに依存したプログラミングは行わない
+// ConcreteBuilderが何であろうとうまく機能するように設計する
 class Director {
-	// Builder のコンストラクタを内部で持つ
 	private Builder builder;
 
-	Director(Builder builder) {
+	public Director(Builder builder) {
 		this.builder = builder;
 	}
 
-	// 外部からはこの construct メソッドを使用することで
-	// インスタンスの初期化を行い、初期化した Building を
-	// 返り値として返す
-	Building construct() {
-		this.builder.buildBase();
-		this.builder.buildFrame();
-		this.builder.buildWall();
-		return this.builder.getResult();
+	public void construct() {
+		builder.makeTitle("Greeting");
+		builder.makeString("朝から昼にかけて");
+		builder.makeItems(new String[] {
+			"おはようございます。",
+			"こんにちは。",
+		});
+		builder.makeString("夜に");
+		builder.makeItems(new String[]{
+			"こんばんは。",
+			"おやすみなさい。",
+			"さようなら。",
+		});
+		builder.close();
 	}
 }

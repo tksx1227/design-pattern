@@ -1,84 +1,85 @@
 package Builder;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 
-enum Material { WOOD, CLAY, CONCRETE, SNOW }
-
-// Builder の抽象クラス
-interface Builder {
-	void buildBase();
-	void buildFrame();
-	void buildWall();
-	Building getResult();
+// 抽象クラス
+// インスタンスを生成するためのインターフェースを定める
+abstract class Builder {
+	// 生成するインスタンスの各部分を作るための抽象メソッド
+	public abstract void makeTitle(String title);
+	public abstract void makeString(String str);
+	public abstract void makeItems(String[] items);
+	public abstract void close();
 }
 
-// 建物を表すクラス
-class Building {
-	private Material base;
-	private Material frame;
-	private Material wall;
+// 具象クラス１（ConcreteBuilder）
+// Builderクラスに基づき、具体的なメソッドが実装される
+class TextBuilder extends Builder {
+	private StringBuffer buffer = new StringBuffer();
 
-	void setBase(Material m) {
-		this.base = m;
+	public void makeTitle(String title) {
+		buffer.append("===============================\n");
+		buffer.append("『" + title + "』\n");
+		buffer.append("\n");
 	}
 
-	void setFrame(Material m) {
-		this.frame = m;
+	public void makeString(String str) {
+		buffer.append("■" + str + "\n");
+		buffer.append("\n");
 	}
 
-	void setWall(Material m) {
-		this.wall = m;
+	public void makeItems(String[] items) {
+		for (int i = 0; i < items.length; i++) {
+			buffer.append("　・" + items[i] + "\n");
+		}
+		buffer.append("\n");
 	}
 
-	public String toString() {
-		return "[Base:" + this.base + ", Frame:" + this.frame + ", Wall:" + this.wall + "]";
-	}
-}
-
-// Builder の具象クラス１
-class JapaneseHouseBuilder implements Builder {
-	private Building building;
-
-	JapaneseHouseBuilder() {
-		this.building = new Building();
+	public void close() {
+		buffer.append("===============================\n");
 	}
 
-	public void buildBase() {
-		this.building.setBase(Material.CONCRETE);
-	}
-
-	public void buildFrame() {
-		this.building.setFrame(Material.WOOD);
-	}
-
-	public void buildWall() {
-		this.building.setWall(Material.CLAY);
-	}
-
-	public Building getResult() {
-		return this.building;
+	public String getResult() {
+		return buffer.toString();
 	}
 }
 
-//Builder の具象クラス２
-class KamakuraBuilder implements Builder {
-	private Building building;
+// 具象クラス２
+// Builderクラスに基づき、具体的なメソッドが実装される
+class HTMLBuilder extends Builder {
+	private String filename;
+	private PrintWriter writer;
 
-	KamakuraBuilder() {
-		this.building = new Building();
+	public void makeTitle(String title) {
+		filename = title + ".html";
+		try {
+			writer = new PrintWriter(new FileWriter(filename));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		writer.println("<html><head><title>" + title + "</title></head><body>");
+		writer.println("<h1>" + title + "</h1>");
 	}
 
-	public void buildBase() {
-		this.building.setBase(Material.SNOW);
+	public void makeString(String str) {
+		writer.println("<p>" + str + "</p>");
 	}
 
-	public void buildFrame() {
-		this.building.setFrame(Material.SNOW);
+	public void makeItems(String[] items) {
+		writer.println("<ul>");
+		for (int i = 0; i < items.length; i++) {
+			writer.println("<li>" + items[i] + "</li>");
+		}
+		writer.println("</ul>");
 	}
 
-	public void buildWall() {
-		this.building.setWall(Material.SNOW);
+	public void close() {
+		writer.println("</body></html>");
+		writer.close();
 	}
 
-	public Building getResult() {
-		return this.building;
+	public String getResult() {
+		return filename;
 	}
 }
